@@ -10,9 +10,9 @@ Supplementary video: preparing
 
 ## Progress
 
-- [] Training script (`train.py`)
-- [] Data generation code (`data_generation.py`)
-- [] Evaluation script  (`evaluation.py`)
+- [ ] Training script (`train.py`)
+- [ ] Data generation code (`data_generation.py`)
+- [ ] Evaluation script  (`evaluation.py`)
 
 ## Requirements
 preparing...
