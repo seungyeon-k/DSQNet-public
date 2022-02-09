@@ -10,7 +10,6 @@ google_api/credentials.json
 google_api/token.pickle
 train_results/
 *.ipynb
-*.png
 real_data
 ScreenCamera*
 *-checkpoint.py
