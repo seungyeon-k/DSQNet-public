@@ -29,10 +29,10 @@ The project codes are tested in the following environment.
 - tensorboard 2.3.0
 
 ### Datasets
-Datasets should be stored in `src/training/datasets/` directory. Datasets can be set up in one of two ways.
-- Run the data generation script in `src/` directory:
+Datasets should be stored in `datasets/` directory. Datasets can be set up in one of two ways.
+- Run the data generation script:
 ```
-python data_generation/data_generator.py
+python data_generator.py
 ```
 
 - Download through the [Google drive link](https://drive.google.com/drive/folders/1PQ9dSeD0WmdESQemsnM1SPmpPDChQ95s?usp=sharing)
@@ -59,7 +59,7 @@ datasets
 ```
 
 ### (Optional) Pretrained model
-Pre-trained models should be stored in `src/training/pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing).
+Pre-trained models should be stored in `pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing).
 When set up, the pretrained directory should look like as follows.
 
 ```

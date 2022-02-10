@@ -1,15 +1,11 @@
 import numpy as np
-
 import os
 import random
 import torch
 from tensorboardX import SummaryWriter
-
 import argparse
 from omegaconf import OmegaConf
-from itertools import cycle
 from datetime import datetime
-# from loader import CustomDataset, DataSplit
 from loader import get_dataloader
 from models import get_model
 from trainers import get_trainer, get_logger
@@ -17,6 +13,7 @@ from utils import save_yaml, complete_config
 from optimizers import get_optimizer
 
 def run(cfg, writer):
+
     # Setup seeds
     seed = cfg.get('seed', 1)
     print(f'running with random seed : {seed}')

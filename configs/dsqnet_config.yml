@@ -35,27 +35,10 @@ model:
     leakyrelu_slope: 0.2
     input_dim: 3
     l_hidden_local: [64, 64, 128, 256]
-    # l_hidden_local: [64, 64, 64, 128]
     local_feature_layer: 4 
     global_feature_dim: 1024
     output_feature: global
   head:
-    # module1:
-    #   arch: mlp
-    #   leakyrelu_slope: 0.2
-    #   activation: 'leakyrelu'
-    #   # out_activation: 'leakyrelu'
-    #   out_activation: 'linear'
-    #   l_hidden: [512, 256]
-    #   # l_hidden: [512, 256, 128]
-    #   # input_dim: 2048
-    #   input_dim: 1024
-    #   output_dim: 14
-    # module2:
-    #   # arch: estimator_st
-    #   arch: estimator_esq
-    #   input_dim: 14
-    #   output_dim: 14
     module1:
       arch: individual_mlp
       input_dim: 1024
@@ -131,42 +114,24 @@ logger:
 data:
   training:
     loader: primitivedataset
-    # object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid']
-    # object_types: ['truncated_torus']
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    # object_types: ['box']
-    # path: /home/robotics/HDD/PDG/dataset/pca_with_canonical_coordinate
-    # path: /home/robotics/HDD/PDG/dataset/truncated_torus
-    # path: /home/robotics/HDD/PDG/dataset/truncated_torus2
-    path: /home/robotics/HDD/PDG/dataset/fitting_final_data4
+    path: datasets
     split: training
     csv_name: 'train_datalist.csv'
     batch_size: 16
     num_workers: 8
   validation:
     loader: primitivedataset
-    # object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid']
-    # object_types: ['truncated_torus']
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    # object_types: ['box']
-    # path: /home/robotics/HDD/PDG/dataset/pca_with_canonical_coordinate
-    # path: /home/robotics/HDD/PDG/dataset/truncated_torus
-    # path: /home/robotics/HDD/PDG/dataset/truncated_torus2
-    path: /home/robotics/HDD/PDG/dataset/fitting_final_data4
+    path: datasets
     split: validation
     csv_name: 'validation_datalist.csv'
     batch_size: 16
     num_workers: 8
   test:
     loader: primitivedataset
-    # object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid']
-    # object_types: ['truncated_torus']
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    # object_types: ['box']
-    # path: /home/robotics/HDD/PDG/dataset/pca_with_canonical_coordinate
-    # path: /home/robotics/HDD/PDG/dataset/truncated_torus
-    # path: /home/robotics/HDD/PDG/dataset/truncated_torus2
-    path: /home/robotics/HDD/PDG/dataset/fitting_final_data4
+    path: datasets
     split: test
     csv_name: 'test_datalist.csv'
     batch_size: 16
