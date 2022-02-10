@@ -20,7 +20,6 @@ Supplementary video: preparing
 - [ ] Evaluation script (`evaluation.py`)
 
 ## Requirements
-preparing...
 
 ### Environment
 The project codes are tested in the following environment.
