@@ -1,4 +1,4 @@
-# DSQNet
+# DSQNet-public
 The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Learning Algorithm for Grasping Unknown Occluded Objects> (Seungyeon Kim<sup>\*</sup>, Taegyun Ahn<sup>\*</sup>, Yonghyeon Lee, Jihwan Kim, Michael Yu Wang, and Frank C. Park, T-ASE 2022).
 
 <sup>\*</sup> The two lead co-authors contributed equally.
