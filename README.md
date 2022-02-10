@@ -7,8 +7,8 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 
 ![pipeline](figures/pipeline.png)
 
-Paper: preparing  
-Supplementary video: preparing
+Paper: preparing...
+Supplementary video: preparing...
 
 ## Progress
 
