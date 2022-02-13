@@ -1,22 +1,25 @@
-import numpy as np
 import os
+import argparse
 import random
+from datetime import datetime
+
+import numpy as np
 import torch
 from tensorboardX import SummaryWriter
-import argparse
 from omegaconf import OmegaConf
-from datetime import datetime
+
 from loader import get_dataloader
 from models import get_model
-from trainers import get_trainer, get_logger
-from utils import save_yaml, complete_config
 from optimizers import get_optimizer
+from trainers import get_trainer
+from utils import save_yaml
+
 
 def run(cfg, writer):
 
     # Setup seeds
-    seed = cfg.get('seed', 1)
-    print(f'running with random seed : {seed}')
+    seed = cfg.get("seed", 1)
+    print(f"running with random seed : {seed}")
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     np.random.seed(seed)
@@ -28,46 +31,47 @@ def run(cfg, writer):
     # Setup Dataloader
     datainfo = cfg.data
     dataloaders = {}
-    normalizers = {}
     for key, data_cfg in datainfo.items():
-        dataloaders[key], normalizers[key] = get_dataloader(data_cfg)
-    
+        dataloaders[key] = get_dataloader(data_cfg)
+
     # Setup Model
     model = get_model(cfg).to(device)
     trainer = get_trainer(cfg)
-    logger = get_logger(cfg, writer)
 
     # Setup optimizer, lr_scheduler and loss function
-    if hasattr(model, 'own_optimizer') and model.own_optimizer:
-        optimizer = model.get_optimizer(cfg['training']['optimizer'])
+    if hasattr(model, "own_optimizer") and model.own_optimizer:
+        optimizer = model.get_optimizer(cfg["training"]["optimizer"])
     else:
         optimizer = get_optimizer(cfg["training"]["optimizer"], model.parameters())
 
-    model, train_result = trainer.train(model, optimizer, dataloaders, logger=logger,
-                                   logdir=writer.file_writer.get_logdir())
+    model, train_result = trainer.train(
+        model,
+        optimizer,
+        dataloaders,
+        writer=writer,
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str)
-    parser.add_argument('--device', default=0)
-    parser.add_argument('--logdir', default='train_results/')
-    parser.add_argument('--run', default=None)
+    parser.add_argument("--config", type=str)
+    parser.add_argument("--device", default=0)
+    parser.add_argument("--logdir", default="train_results/")
+    parser.add_argument("--run", default=None)
     args = parser.parse_args()
 
     cfg = OmegaConf.load(args.config)
-    if args.device == 'cpu':
-        cfg['device'] = f'cpu'
+    if args.device == "cpu":
+        cfg["device"] = f"cpu"
     else:
-        cfg['device'] = f'cuda:{args.device}'
-    
+        cfg["device"] = f"cuda:{args.device}"
+
     if args.run is None:
-        run_id = datetime.now().strftime('%Y%m%d-%H%M')
+        run_id = datetime.now().strftime("%Y%m%d-%H%M")
     else:
-        run_id = args.run 
+        run_id = args.run
 
-    cfg = complete_config(cfg)
-
-    config_basename = os.path.basename(args.config).split('.')[0]
+    config_basename = os.path.basename(args.config).split(".")[0]
     logdir = os.path.join(args.logdir, config_basename, str(run_id))
     writer = SummaryWriter(logdir=logdir)
     print("Result directory: {}".format(logdir))
@@ -75,6 +79,6 @@ if __name__ == '__main__':
     # copy config file
     copied_yml = os.path.join(logdir, os.path.basename(args.config))
     save_yaml(copied_yml, OmegaConf.to_yaml(cfg))
-    print(f'config saved as {copied_yml}')
+    print(f"config saved as {copied_yml}")
 
     run(cfg, writer)
