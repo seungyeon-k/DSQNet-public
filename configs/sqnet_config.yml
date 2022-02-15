@@ -92,7 +92,7 @@ data:
   training:
     loader: primitivedataset
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    path: /home/robotics/HDD/PDG/dataset/fitting_final_data4
+    path: datasets
     split: training
     csv_name: 'train_datalist.csv'
     batch_size: 16
@@ -100,7 +100,7 @@ data:
   validation:
     loader: primitivedataset
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    path: /home/robotics/HDD/PDG/dataset/fitting_final_data4
+    path: datasets
     split: validation
     csv_name: 'validation_datalist.csv'
     batch_size: 16
@@ -108,7 +108,7 @@ data:
   test:
     loader: primitivedataset
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    path: /home/robotics/HDD/PDG/dataset/fitting_final_data4
+    path: datasets
     split: test
     csv_name: 'test_datalist.csv'
     batch_size: 16

@@ -1,17 +1,11 @@
 import numpy as np
-import open3d as o3d
-import os
 import pandas
-import sys
 import torch
-from torch.utils.data.sampler import SubsetRandomSampler
-sys.path.append("..")
-from functions import lie
 from sklearn.preprocessing import normalize
 
 class PrimitiveDataset(torch.utils.data.Dataset): 
 
-    def __init__(self, split, data_cfg):
+    def __init__(self, data_cfg):
                 
         # data path
         data_path = data_cfg["path"]
@@ -37,7 +31,6 @@ class PrimitiveDataset(torch.utils.data.Dataset):
 
         pc_list = []
         pc_gt_list = []
-        pc_gt_split_list = []
         label_list = []
         superquadric_label_list = []
         for file in data_namelist:
@@ -79,8 +72,8 @@ class PrimitiveDataset(torch.utils.data.Dataset):
             pc_list.append(pc)
 
             # ground truth point cloud data
-            pc_gt = data["full_pc"]
-            pc_gt_list.append(pc_gt.transpose())
+            pc_gt = data["full_pc"].transpose()
+            pc_gt_list.append(pc_gt)
 
             # only for SINGLE primitives 
             if len(data["primitives"]) is not 1:
@@ -114,11 +107,6 @@ class PrimitiveDataset(torch.utils.data.Dataset):
                         for _, value in parameters.items():
                             label_params[index] = value
                             index = index + 1
-
-                        # for calculating boundary
-                        boundary_height = value
-                        # if primitive['type'] == 'truncated_torus':
-                        #     boundary_height = label_params[index-3] + label_params[index-2] - label_params[index-1]
                     else:
                         index += full_num_params[type_]
 
@@ -126,100 +114,14 @@ class PrimitiveDataset(torch.utils.data.Dataset):
             label.append(label_type + label_p + label_so3 + label_params + [1])
             label_list.append(label)
 
-            # print(file_prefix)
-            # print(label)
-
             # superquadric label_list
             superquadric_label = orientation_prior(file_prefix, pose)
-            # superquadric_label = shape_prior(file_prefix, parameters)
             superquadric_label_list.append(superquadric_label)
-
-            # # boundary-aware
-            # pc_gt_homo = np.concatenate((pc_gt[:, :3].transpose(), np.ones((1, pc_gt.shape[0]))), axis=0)
-            # pc_gt_transformed = np.linalg.inv(pose).dot(pc_gt_homo)
-
-            # pc_upper_index = pc_gt_transformed[2, :] > boundary_height / 2 - 1e-4
-            # pc_lower_index = pc_gt_transformed[2, :] < -boundary_height / 2 + 1e-4
-            # pc_inner_index = np.logical_and(~pc_upper_index, ~pc_lower_index)
-            # pc_gt_upper = pc_gt[pc_upper_index, :]
-            # pc_gt_lower = pc_gt[pc_lower_index, :]
-            # pc_gt_inner = pc_gt[pc_inner_index, :]
-            # pc_gt_upper = np.concatenate((pc_gt_upper, 1*np.ones((pc_gt_upper.shape[0], 1))), axis=1)
-            # pc_gt_lower = np.concatenate((pc_gt_lower, 2*np.ones((pc_gt_lower.shape[0], 1))), axis=1)
-            # pc_gt_inner = np.concatenate((pc_gt_inner, 3*np.ones((pc_gt_inner.shape[0], 1))), axis=1)
-            # pc_gt_split = np.concatenate((pc_gt_upper.transpose(), pc_gt_lower.transpose(), pc_gt_inner.transpose()), axis=1)
-            # pc_gt_split_list.append(pc_gt_split)
-
-            # if not (sum(pc_upper_index) + sum(pc_lower_index) + sum(pc_inner_index) == 1500):
-            #     print(boundary_height)
-
-            # if file_prefix == 'box':
-            #     print(file_prefix)
-            #     print(pc_gt_upper.shape, pc_gt_inner.shape, pc_gt_lower.shape)
-
-            # if file_prefix == 'cylinder':
-            #     print(file_prefix)
-            #     print(pc_gt_upper.shape, pc_gt_inner.shape, pc_gt_lower.shape)
-
-            # if file_prefix == 'truncated_cone':
-            #     pc_upper_index = pc_gt_transformed[2, :] > boundary_height / 2 - 1e-5
-            #     pc_lower_index = pc_gt_transformed[2, :] < -boundary_height / 2 + 1e-5
-            #     pc_inner_index = np.logical_and(~pc_upper_index, ~pc_lower_index)
-            #     pc_gt_upper = pc_gt[pc_upper_index, :]
-            #     pc_gt_lower = pc_gt[pc_lower_index, :]
-            #     pc_gt_inner = pc_gt[pc_inner_index, :]
-            #     pc_gt_upper = np.concatenate((pc_gt_upper, 1*np.ones((pc_gt_upper.shape[0], 1))), axis=1)
-            #     pc_gt_lower = np.concatenate((pc_gt_lower, 2*np.ones((pc_gt_lower.shape[0], 1))), axis=1)
-            #     pc_gt_inner = np.concatenate((pc_gt_inner, 3*np.ones((pc_gt_inner.shape[0], 1))), axis=1)
-            #     pc_gt_split = np.concatenate((pc_gt_upper.transpose(), pc_gt_lower.transpose(), pc_gt_inner.transpose()), axis=1)
-            #     pc_gt_split_list.append(pc_gt_split)
-            
-            # elif file_prefix == 'cone':
-            #     pc_upper_index = pc_gt_transformed[2, :] > boundary_height / 2 - 1e-5
-            #     pc_lower_index = pc_gt_transformed[2, :] < -boundary_height / 2 + 1e-5
-            #     pc_inner_index = np.logical_and(~pc_upper_index, ~pc_lower_index)
-            #     pc_gt_upper = pc_gt[pc_upper_index, :]
-            #     pc_gt_lower = pc_gt[pc_lower_index, :]
-            #     pc_gt_inner = pc_gt[pc_inner_index, :]
-            #     pc_gt_upper = np.concatenate((pc_gt_upper, 1*np.ones((pc_gt_upper.shape[0], 1))), axis=1)
-            #     pc_gt_lower = np.concatenate((pc_gt_lower, 2*np.ones((pc_gt_lower.shape[0], 1))), axis=1)
-            #     pc_gt_inner = np.concatenate((pc_gt_inner, 3*np.ones((pc_gt_inner.shape[0], 1))), axis=1)
-            #     pc_gt_split = np.concatenate((pc_gt_upper.transpose(), pc_gt_lower.transpose(), pc_gt_inner.transpose()), axis=1)
-            #     pc_gt_split_list.append(pc_gt_split)
-
-            # elif file_prefix == 'truncated_sphere':
-            #     pc_upper_index = pc_gt_transformed[2, :] > boundary_height / 2 - 1e-5
-            #     pc_lower_index = pc_gt_transformed[2, :] < -boundary_height / 2 + 1e-5
-            #     pc_inner_index = np.logical_and(~pc_upper_index, ~pc_lower_index)
-            #     pc_gt_upper = pc_gt[pc_upper_index, :]
-            #     pc_gt_lower = pc_gt[pc_lower_index, :]
-            #     pc_gt_inner = pc_gt[pc_inner_index, :]
-            #     pc_gt_upper = np.concatenate((pc_gt_upper, 1*np.ones((pc_gt_upper.shape[0], 1))), axis=1)
-            #     pc_gt_lower = np.concatenate((pc_gt_lower, 2*np.ones((pc_gt_lower.shape[0], 1))), axis=1)
-            #     pc_gt_inner = np.concatenate((pc_gt_inner, 3*np.ones((pc_gt_inner.shape[0], 1))), axis=1)
-            #     pc_gt_split = np.concatenate((pc_gt_upper.transpose(), pc_gt_lower.transpose(), pc_gt_inner.transpose()), axis=1)
-            #     pc_gt_split_list.append(pc_gt_split)
-
-            # elif file_prefix == 'truncated_torus':
-            #     pc_side_index = pc_gt_transformed[0, :] > boundary_height - 1e-5
-            #     pc_inner_index = ~pc_side_index
-            #     pc_gt_side = pc_gt[pc_side_index, :]
-            #     pc_gt_inner = pc_gt[pc_inner_index, :]
-            #     pc_gt_side = np.concatenate((pc_gt_side, 1*np.ones((pc_gt_side.shape[0], 1))), axis=1)
-            #     pc_gt_inner = np.concatenate((pc_gt_inner, 3*np.ones((pc_gt_inner.shape[0], 1))), axis=1)
-            #     pc_gt_split = np.concatenate((pc_gt_side.transpose(), pc_gt_inner.transpose()), axis=1)
-            #     pc_gt_split_list.append(pc_gt_split)
-
-            # else:
-            #     pc_gt_inner = np.concatenate((pc_gt, 3*np.ones((pc_gt.shape[0], 1))), axis=1)
-            #     pc_gt_split = pc_gt_inner.transpose()
-            #     pc_gt_split_list.append(pc_gt_split)
 
         # convert to numpy
         batch_size = len(pc_list)
         pc_list_numpy = np.array(pc_list)
         pc_gt_list_numpy = np.array(pc_gt_list)
-        # pc_gt_split_list_numpy = np.array(pc_gt_split_list)
         label_list_numpy = np.array(label_list)
         superquadric_label_list_numpy = np.array(superquadric_label_list)
         self.normalizer = None
@@ -239,7 +141,6 @@ class PrimitiveDataset(torch.utils.data.Dataset):
             self.normalizer = diagonal_len
             
         self.pc_list = pc_list_numpy.tolist()
-        # self.pc_gt_list = pc_gt_split_list_numpy.tolist()
         self.pc_gt_list = pc_gt_list_numpy.tolist()
         self.label_list = label_list_numpy.tolist()
         self.superquadric_label_list = superquadric_label_list_numpy.tolist()
@@ -263,38 +164,6 @@ class PrimitiveDataset(torch.utils.data.Dataset):
         l_gt = torch.Tensor(self.superquadric_label_list[idx])
         return x, x_gt, y, l_gt
 
-def shape_prior(primitive_type, dict_parameters):
-
-    if primitive_type == 'box':
-        superquadric_label = [0, 0.2, 0.2]
-    elif primitive_type == 'sphere':
-        superquadric_label = [0, 1, 1]
-    elif primitive_type == 'truncated_sphere':
-        superquadric_label = [0, 1, 1] 
-    elif primitive_type == 'cylinder':
-        superquadric_label = [0, 0.2, 1]
-    elif primitive_type == 'cone':
-        superquadric_label = [0, 2, 1]
-    elif primitive_type == 'truncated_cone':
-        superquadric_label = [0, 2, 1]    
-    elif primitive_type == 'torus':
-        superquadric_label = [dict_parameters['torus_radius'] / dict_parameters['tube_radius'], 1, 1]
-    elif primitive_type == 'truncated_torus':
-        superquadric_label = [dict_parameters['torus_radius'] / dict_parameters['tube_radius'], 1, 1]
-    elif primitive_type == 'rectangle_ring':
-        superquadric_label = [(dict_parameters['depth'] - dict_parameters['thickness2']) / dict_parameters['thickness2'], 0.2, 0.2]
-    elif primitive_type == 'truncated_rectangle_ring':
-        superquadric_label = [(dict_parameters['depth'] - dict_parameters['thickness2']) / dict_parameters['thickness2'], 0.2, 0.2]
-    elif primitive_type == 'cylinder_ring':
-        superquadric_label = [2 * dict_parameters['torus_radius'] / (dict_parameters['radius_outer'] - dict_parameters['radius_inner']) - 1, 0.2, 1]
-    elif primitive_type == 'truncated_cylinder_ring':
-        superquadric_label = [2 * dict_parameters['torus_radius'] / (dict_parameters['radius_outer'] - dict_parameters['radius_inner']) - 1, 0.2, 1]
-    elif primitive_type == 'semi_sphere_shell':
-        superquadric_label = [1110, 1111, 1101]
-    else:
-        raise ValueError('primitive type is not understood') 
-
-    return superquadric_label
 
 def orientation_prior(primitive_type, pose):
 
@@ -302,9 +171,4 @@ def orientation_prior(primitive_type, pose):
         z = pose[:3,1].tolist()
     else:
         z = pose[:3,2].tolist()
-
     return z
-
-    # y = pose[:3,1].tolist()
-
-    # return y

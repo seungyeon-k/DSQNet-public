@@ -12,8 +12,7 @@ class BaseSQTrainer:
         self.cfg = training_cfg
         self.device = device
         self.d_val_result = {}
-        self.loss_class = get_loss(training_cfg, device=device)
-        self.loss = self.loss_class.loss
+        self.loss = get_loss(training_cfg, device=device)
 
     def train(self, model, opt, d_dataloaders, logger=None, logdir=''):
         cfg = self.cfg
