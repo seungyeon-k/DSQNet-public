@@ -1,25 +1,19 @@
-from loss.dsq_loss import DeformableSuperquadricLoss
-from loss.sq_loss import SuperquadricLoss
+from .dsq_loss import DeformableSuperquadricLoss
+from .sq_loss import SuperquadricLoss
+from .segmentation_loss import SegmentationLoss
 
-def get_loss(cfg, *args, device=None, version=None, **kwargs):
+def get_loss(cfg, *args, **kwargs):
     loss_dict = cfg["loss"]
-    name = loss_dict['type']
-    loss = _get_loss_instance(name)
-    return loss(device, **loss_dict)
+    name = loss_dict["type"]
+    loss_instance = get_loss_instance(name)
+    return loss_instance(**loss_dict)
 
-def _get_loss_instance(name):
+def get_loss_instance(name):
     try:
         return {
-            "sq_loss": get_superquadric_loss,
-            "dsq_loss": get_deformed_superquadric_loss
+            "sq_loss": SuperquadricLoss,
+            "dsq_loss": DeformableSuperquadricLoss,
+            "segmentation_loss": SegmentationLoss,
         }[name]
     except:
         raise ("Loss {} not available".format(name))
-
-def get_superquadric_loss(device, **cfg):
-    loss = SuperquadricLoss(device=device, **cfg)
-    return loss
-
-def get_deformed_superquadric_loss(device, **cfg):
-    loss = DeformableSuperquadricLoss(device=device, **cfg)
-    return loss
