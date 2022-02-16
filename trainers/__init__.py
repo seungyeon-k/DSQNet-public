@@ -1,5 +1,5 @@
 from .segmentation_trainer import SegmentationTrainer
-from .base_sq import BaseSQTrainer
+from .recognition_trainer import RecognitionTrainer
 
 
 def get_trainer(cfg):
@@ -7,8 +7,8 @@ def get_trainer(cfg):
     device = cfg["device"]
     if trainer_type == "segmentation":
         trainer = SegmentationTrainer(cfg["training"], device=device)
-    elif trainer_type == "base_sq":
-        trainer = BaseSQTrainer(cfg["training"], device=device)
+    elif trainer_type == "recognition":
+        trainer = RecognitionTrainer(cfg["training"], device=device)
     else:
         raise NotImplementedError(f"trainer {trainer_type} not implemented")
     return trainer
