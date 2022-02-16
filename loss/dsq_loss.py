@@ -1,12 +1,11 @@
 import torch
 import torch.nn as nn
-from functions.lie_torch import quaternions_to_rotation_matrices_torch
+from functions.utils_torch import quaternions_to_rotation_matrices_torch
 
 class DeformableSuperquadricLoss(nn.Module):
-    def __init__(self, device=None, **kargs):
+    def __init__(self, **kargs):
         super(DeformableSuperquadricLoss, self).__init__()
-        self.device = device
-        self.weight = kargs['weight']
+        self.weight = kargs["weight"]
 
     def forward(self, x, l_gt, output):
         """
@@ -27,7 +26,7 @@ class DeformableSuperquadricLoss(nn.Module):
         parameters = output[:, 7:]
 
         # ground-truth point cloud
-        x_position = x[:,:3,:]
+        x_position = x[:, :3, :]
         rotation_t = rotation.permute(0,2,1)
         x_transformed = -rotation_t@position.unsqueeze(2) + rotation_t@x_position
 
@@ -48,7 +47,7 @@ class DeformableSuperquadricLoss(nn.Module):
 
         return loss  
 
-    def dsq_distance(x, parameters):
+    def dsq_distance(self, x, parameters):
         
         # parameter decomposition
         a1 = parameters[:,0:1]

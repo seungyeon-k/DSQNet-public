@@ -2,7 +2,6 @@ import torch
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-
 class SegmentationLoss:
     def __init__(self, **kargs):
         pass
@@ -21,7 +20,6 @@ class SegmentationLoss:
         )
 
         return loss
-
 
 def hungarian_matching(W_pred, W_gt):
     """
@@ -53,7 +51,6 @@ def hungarian_matching(W_pred, W_gt):
         matching_indices[b, :] = col_ind
 
     return matching_indices
-
 
 def batch_reordering(pred, matching_indices):
 
