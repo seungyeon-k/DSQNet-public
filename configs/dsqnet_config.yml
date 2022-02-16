@@ -1,31 +1,5 @@
-common_components:
-  full_params:
-    box: ['width', 'depth', 'height']
-    cone: ['lower_radius', 'upper_radius', 'height']
-    cylinder: ['radius', 'height']
-    sphere: ['radius', 'height']
-    superquadric: ['a1', 'a2', 'a3', 'e1', 'e2']
-    torus: ['torus_radius', 'tube_radius', 'c1']
-    rectangle_ring: ['width', 'depth', 'height', 'thickness1', 'thickness2', 'c1']
-    cylinder_ring: ['radius_outer', 'radius_inner', 'height', 'c1']
-    semi_sphere_shell: ['radius_outer', 'radius_inner']
-    extended_superquadric: ['a1', 'a2', 'a3', 'e1', 'e2', 'c1', 'c2']
-    supertoroid: ['a1', 'a2', 'a3', 'a4', 'e1', 'e2']
-    # deformed_superquadric: ['a1', 'a2', 'a3', 'e1', 'e2', 'k']\
-    # deformed_superquadric: ['a1', 'a2', 'a3', 'e1', 'e2', 'k', 'b', 'alpha']
-    deformed_superquadric: ['a1', 'a2', 'a3', 'e1', 'e2', 'k', 'b', 'cos_alpha', 'sin_alpha']
-  # info_types: ['box','cone','cylinder', 'sphere', 'superquadric']
-  # info_types: ['torus']
-  info_types: ['box', 'cone', 'cylinder', 'sphere', 'superquadric', 'torus']
-  n_primitives: 1
-  num_pointclouds: 1500
-  num_pointcloudsinput: 300
-  num_gt_pointclouds: 1500
-  input_normalization: True
 model:
-  arch: base_arch
-  use_label: False
-  use_superquadric_label: True
+  arch: dsqnet
   backbone:
     arch: dgcnn
     use_spatial_transform: False
@@ -35,104 +9,78 @@ model:
     leakyrelu_slope: 0.2
     input_dim: 3
     l_hidden_local: [64, 64, 128, 256]
-    local_feature_layer: 4 
     global_feature_dim: 1024
-    output_feature: global
-  head:
-    module1:
-      arch: individual_mlp
-      input_dim: 1024
-      module_collection:
-        position:
-          activation: 'leakyrelu'
-          leakyrelu_slope: 0.2
-          out_activation: 'linear'
-          l_hidden: [512, 256]
-          use_batch_norm: False
-          output_dim: 3
-        orientation:
-          activation: 'leakyrelu'
-          leakyrelu_slope: 0.2
-          out_activation: 'linear'
-          l_hidden: [512, 256]
-          use_batch_norm: False
-          output_dim: 4
-        size:
-          activation: 'leakyrelu'
-          leakyrelu_slope: 0.2
-          out_activation: 'linear'
-          l_hidden: [512, 256]
-          use_batch_norm: False
-          output_dim: 3
-        shape:
-          activation: 'leakyrelu'
-          leakyrelu_slope: 0.2
-          out_activation: 'linear'
-          l_hidden: [512, 256]
-          use_batch_norm: False
-          output_dim: 2
-        taper:
-          activation: 'leakyrelu'
-          leakyrelu_slope: 0.2
-          out_activation: 'linear'
-          l_hidden: [512, 256]
-          use_batch_norm: False
-          output_dim: 1
-        bending:
-          activation: 'leakyrelu'
-          leakyrelu_slope: 0.2
-          out_activation: 'linear'
-          l_hidden: [512, 256]
-          output_dim: 1
-        bending_angle:
-          activation: 'leakyrelu'
-          leakyrelu_slope: 0.2
-          out_activation: 'linear'
-          l_hidden: [512, 256]
-          output_dim: 2
-trainer: base_sq
+  position:
+    l_hidden: [512, 256]
+    output_dim: 3
+  orientation:
+    l_hidden: [512, 256]
+    output_dim: 4
+  size:
+    l_hidden: [512, 256]
+    output_dim: 3
+  shape:
+    l_hidden: [512, 256]
+    output_dim: 2
+  taper:
+    l_hidden: [512, 256]
+    output_dim: 1
+  bending:
+    l_hidden: [512, 256]
+    output_dim: 1
+  bending_angle:
+    l_hidden: [512, 256]
+    output_dim: 2
+trainer: recognition
 training:
-  model_initialize: False
-  n_epoch: 10000
+  n_epoch: 100
   loss:
-    type: deformed_superquadric_loss
+    type: dsq_loss
     weight: 0.01
-    list_weights: null
   optimizer:
     name: 'adam'
     lr: 0.001
-  lr_schedule: null
-  resume: null
-  augmentations: null
-  print_interval: 1
-  val_interval: 1000
-  save_interval: 5000
-logger:
+  # metric:
+  #   type: iou
+  print_interval: 100
+  val_interval: 2000
+  save_interval: 1000
   visualize_number: 3
   visualize_interval: 1000
-  primitive_type: deformed_superquadric
 data:
   training:
-    loader: primitivedataset
+    loader: primitive
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    path: datasets
-    split: training
+    num_points: 1500
+    num_gt_points: 1500
+    num_sampled_points: 300    
+    noise_augment: True
+    noise_std: 0.001
+    path: datasets/primitive_dataset
     csv_name: 'train_datalist.csv'
     batch_size: 16
     num_workers: 8
   validation:
-    loader: primitivedataset
+    loader: primitive
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    path: datasets
-    split: validation
+    num_points: 1500
+    num_gt_points: 1500
+    num_sampled_points: 300  
+    noise_augment: True
+    noise_std: 0.001
+    path: datasets/primitive_dataset
     csv_name: 'validation_datalist.csv'
     batch_size: 16
     num_workers: 8
   test:
-    loader: primitivedataset
+    loader: primitive
     object_types: ['box', 'cone', 'cylinder', 'truncated_cone', 'ellipsoid', 'truncated_torus']
-    path: datasets
-    split: test
+    num_points: 1500
+    num_gt_points: 1500
+    num_sampled_points: 300  
+    noise_augment: True
+    noise_std: 0.001
+    path: datasets/primitive_dataset
     csv_name: 'test_datalist.csv'
     batch_size: 16
     num_workers: 8

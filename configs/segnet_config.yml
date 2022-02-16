@@ -1,5 +1,5 @@
 model:
-  arch: segmentation
+  arch: segnet
   backbone:
     arch: dgcnn
     use_spatial_transform: False
@@ -10,7 +10,6 @@ model:
     l_hidden_local: [64, 64, 128, 256]
     local_feature_layer: 4 
     global_feature_dim: 1024
-    output_feature: global
   l_hidden: [512, 256, 128]
   num_primitives: 5
 trainer: segmentation
@@ -24,15 +23,16 @@ training:
   metric:
     type: segmentation
     num_classes: 5
-  print_interval: 10
-  val_interval: 20
-  save_interval: 10
+  print_interval: 100
+  val_interval: 2000
+  save_interval: 1000
   visualize_number: 3
-  visualize_interval: 10
+  visualize_interval: 1000
 data:
   training:
     loader: object
-    num_points: 1000
+    num_points: 3000
+    num_sampled_points: 1000 
     num_primitives: 5
     noise_augment: True
     noise_std: 0.001
@@ -42,7 +42,8 @@ data:
     num_workers: 8
   validation:
     loader: object
-    num_points: 1000
+    num_points: 3000
+    num_sampled_points: 1000 
     num_primitives: 5
     noise_augment: True
     noise_std: 0.001
@@ -52,7 +53,8 @@ data:
     num_workers: 8
   test:
     loader: object
-    num_points: 1000
+    num_points: 3000
+    num_sampled_points: 1000 
     num_primitives: 5
     noise_augment: True
     noise_std: 0.001
