@@ -18,7 +18,11 @@ class SegmentationTrainer:
         self.loss_meter = {"train": averageMeter(), "val": averageMeter()}
 
         self.loss = get_loss(training_cfg)
-        self.metric = get_metric(training_cfg)
+        self.show_metric = False
+        dict_metric = training_cfg.get("metric", None)
+        if dict_metric is not None:
+            self.metric = get_metric(dict_metric)
+            self.show_metric = True
 
     def train(self, model, opt, dataloaders, writer):
         cfg = self.cfg
