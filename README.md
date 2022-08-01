@@ -1,44 +1,35 @@
-# DSQNet-public
+# Deformable Superquadric Network (DSQNet)
 The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Learning Algorithm for Grasping Unknown Occluded Objects> (Seungyeon Kim<sup>\*</sup>, Taegyun Ahn<sup>\*</sup>, Yonghyeon Lee, Jihwan Kim, Michael Yu Wang, and Frank C. Park, T-ASE 2022).
 
 <sup>\*</sup> The two lead co-authors contributed equally.
 
 > The paper proposes a recognition-based grasping method that merges a richer set of shape primitives, the deformable superquadrics, with a deep learning network, DSQNet, that is trained to identify complete object shapes from partial point cloud data.
 
-![pipeline](figures/pipeline.png)
+- *[Paper](https://ieeexplore.ieee.org/abstract/document/9802912)* 
+- *[Supplementary video](https://ieeexplore.ieee.org/abstract/document/9802912/media#media)* 
 
-Paper: preparing...
-Supplementary video: preparing...
+## Preview
+![pipeline](figures/pipeline.png)
+<I>Figure 1: Pipeline for proposed recognition-based grasping algorithm: (i) a trained segmentation network is used to segment a partially observed point cloud into a set of simpler point clouds; (ii) The trained DSQNet converts each point cloud into a deformable superquadric primitive, with its collective union representing the full object shape; (iii) grasp poses are generated in a gripper-dependent manner from the recognized full shapes. </I>
 
 ## Progress
-
-- [ ] DSQNet and SQNet training script (`train.py`)
+- [ ] DSQNet training script (`train.py`)
 - [ ] Segmentation network training script (`train.py`)
-- [x] Pre-trained model upload
-- [ ] Data generation script (`data_generation.py`)
 - [x] Dataset upload
+- [ ] Pre-trained model upload
 - [ ] Evaluation script (`evaluation.py`)
+- [ ] Requirements update
+- [ ] Data generation script (`data_generation.py`)
 
 ## Requirements
-
 ### Environment
 The project codes are tested in the following environment.
-
 - python 3.7.9
 - pytorch 1.6.0
 - tensorboard 2.3.0
 
 ### Datasets
-Datasets should be stored in `datasets/` directory. Datasets can be set up in one of two ways.
-- Run the data generation script:
-```
-python data_generator.py
-```
-
-- Download through the [Google drive link](https://drive.google.com/drive/folders/1PQ9dSeD0WmdESQemsnM1SPmpPDChQ95s?usp=sharing)
-
-When set up, the dataset directory should look like as follows.
-
+Datasets should be stored in `datasets/` directory. Datasets can be downloaded through the [Google drive link](https://drive.google.com/drive/folders/1PQ9dSeD0WmdESQemsnM1SPmpPDChQ95s?usp=sharing). After set up, the `datasets/` directory should be as follows.
 ```
 datasets
 ├── primitive_dataset
@@ -57,11 +48,14 @@ datasets
     └── test_datalist.csv
 
 ```
+- (Optional) If you want to generate your own custom dataset, run the following script:
+```
+preparing...
+```
+> **Tips for playing with code:** preparing...
 
-### (Optional) Pretrained model
-Pre-trained models should be stored in `pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing).
-When set up, the pretrained directory should look like as follows.
-
+### Pretrained model
+Pre-trained models should be stored in `pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing). After set up, the `pretrained/` directory should be follows.
 ```
 pretrained
 ├── segnet
@@ -75,23 +69,25 @@ pretrained
     └── model_best.pkl
 ```
 
-## Training
-preparing...
+## Running
+### Training
+The training script is `train.py`. 
+- `--config` specifies a path to a configuration yml file.
+- `--logdir` specifies a directory where the results will be saved.
+- `--run` specifies a name for an experiment.
+- `--device` specifies an GPU number to use.
 
-## Evaluation
+### Evaluation
 preparing...
 
 ## Citation
 ```
-@article{temp,
-  title={temp},
-  author={temp},
-  journal={temp},
-  volume={temp},
-  number={temp},
-  pages={temp},
-  year={temp},
-  publisher={temp}
+@article{kim2022dsqnet,
+  title={DSQNet: A Deformable Model-Based Supervised Learning Algorithm for Grasping Unknown Occluded Objects},
+  author={Kim, Seungyeon and Ahn, Taegyun and Lee, Yonghyeon and Kim, Jihwan and Wang, Michael Yu and Park, Frank C},
+  journal={IEEE Transactions on Automation Science and Engineering},
+  year={2022},
+  publisher={IEEE}
 }
 ```
 

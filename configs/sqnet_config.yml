@@ -24,7 +24,7 @@ model:
     output_dim: 2
 trainer: recognition
 training:
-  n_epoch: 100
+  n_epoch: 1000
   loss:
     type: sq_loss
     weight: 0.01
@@ -34,10 +34,10 @@ training:
   # metric:
   #   type: iou
   print_interval: 100
-  val_interval: 2000
-  save_interval: 1000
+  val_interval: 5000
+  save_interval: 10000
   visualize_number: 3
-  visualize_interval: 1000
+  visualize_interval: 10000
 data:
   training:
     loader: primitive
