@@ -6,7 +6,6 @@ import pandas as pd
 import torch
 from sklearn.preprocessing import normalize
 
-
 class ObjectDataset(torch.utils.data.Dataset):
     def __init__(self, data_cfg):
         self.num_primitives = data_cfg["num_primitives"]

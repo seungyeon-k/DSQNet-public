@@ -1,15 +1,15 @@
 import torch
 import torch.nn as nn
 
-
 class SegmentationNetwork(nn.Module):
     def __init__(self, backbone, **args):
         super(SegmentationNetwork, self).__init__()
         self.backbone = backbone
 
-        backbone_out_channel = self.backbone.local_global_feature_map(
-            torch.rand(1, self.backbone.input_dim, 100)
-        ).shape[1]
+        # backbone_out_channel = self.backbone.local_global_feature_map(
+        #     torch.rand(1, self.backbone.input_dim, 100)
+        # ).shape[1]
+        backbone_out_channel = self.backbone.fusion_feature_dim
         l_hidden = list(args["l_hidden"])
         in_channels = [backbone_out_channel] + l_hidden
         out_channels = l_hidden + [args["num_primitives"]]

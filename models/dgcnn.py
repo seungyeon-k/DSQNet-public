@@ -11,7 +11,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 def knn(x, k):
     inner = -2 * torch.matmul(x.transpose(2, 1), x)
     xx = torch.sum(x ** 2, dim=1, keepdim=True)
@@ -19,7 +18,6 @@ def knn(x, k):
 
     idx = pairwise_distance.topk(k=k, dim=-1)[1]  # (batch_size, num_points, k)
     return idx
-
 
 def get_graph_feature(x, k=20, idx=None):
     batch_size = x.size(0)
@@ -48,7 +46,6 @@ def get_graph_feature(x, k=20, idx=None):
     feature = torch.cat((feature - x, x), dim=3).permute(0, 3, 1, 2).contiguous()
 
     return feature
-
 
 class Transform_Net(nn.Module):
     def __init__(self, args):
@@ -103,7 +100,6 @@ class Transform_Net(nn.Module):
 
         return x
 
-
 class GCM_Block(nn.Module):
     def __init__(
         self,
@@ -145,7 +141,6 @@ class DGCNN(nn.Module):
         self.input_dim = kargs["input_dim"]
         self.local_feature_dim = sum(self.l_hidden_local)
         self.fusion_feature_dim = self.local_feature_dim + self.global_feature_dim
-        self.output_feature = kargs["output_feature"]
         self.use_spatial_transform = kargs["use_spatial_transform"]
         self.use_mean_global_feature = kargs["use_mean_global_feature"]
         if "use_batch_norm" in kargs:
@@ -217,7 +212,6 @@ class DGCNN(nn.Module):
         batch_size = x.size(0)
         x_local = self.local_feature_map(x)
         x = self.layers_global(x_local)
-        # x_global = x.max(dim=-1, keepdim=False)[0]
         x_global1 = F.adaptive_max_pool1d(x, 1).view(batch_size, -1)
 
         if self.use_mean_global_feature is False:

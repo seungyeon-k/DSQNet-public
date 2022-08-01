@@ -1,5 +1,7 @@
 from .dgcnn import DGCNN
-from models.segmenation_network import SegmentationNetwork
+from .sqnet import SuperquadricNetwork
+from .dsqnet import DeformableSuperquadricNetwork
+from .segmenation_network import SegmentationNetwork
 
 
 def get_model(cfg, *args, **kwargs):
@@ -12,15 +14,15 @@ def get_model(cfg, *args, **kwargs):
     model = get_model_instance(name)
     return model(backbone, **cfg_model)
 
-
 def get_model_instance(name):
     try:
         return {
-            "segmentation": SegmentationNetwork,
+            "sqnet": SuperquadricNetwork,
+            "dsqnet": DeformableSuperquadricNetwork,
+            "segnet": SegmentationNetwork,
         }[name]
     except:
         raise ("Model {} not available".format(name))
-
 
 def get_backbone_instance(name):
     try:

@@ -1,11 +1,10 @@
 import torch
 import torch.nn as nn
-from functions.lie_torch import quaternions_to_rotation_matrices_torch
+from functions.utils_torch import quaternions_to_rotation_matrices_torch
 
 class SuperquadricLoss(nn.Module):
-    def __init__(self, device=None, **kargs):
+    def __init__(self, **kargs):
         super(SuperquadricLoss, self).__init__()
-        self.device = device
         self.weight = kargs['weight']
 
     def forward(self, x, l_gt, output):
@@ -27,7 +26,7 @@ class SuperquadricLoss(nn.Module):
         parameters = output[:, 7:]
 
         # ground-truth point cloud
-        x_position = x[:,:3,:]
+        x_position = x[:, :3, :]
         rotation_t = rotation.permute(0,2,1)
         x_transformed = -rotation_t@position.unsqueeze(2) + rotation_t@x_position
 
@@ -48,7 +47,7 @@ class SuperquadricLoss(nn.Module):
 
         return loss
 
-    def sq_distance(x, parameters):
+    def sq_distance(self, x, parameters):
         
         # parameters
         a1 = parameters[:,0:1]
@@ -56,6 +55,9 @@ class SuperquadricLoss(nn.Module):
         a3 = parameters[:,2:3]
         e1 = parameters[:,3:4]
         e2 = parameters[:,4:5]
+
+        # epsilon for numerical stability
+        eps = 1e-4
 
         beta = (
             (

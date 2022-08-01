@@ -6,7 +6,6 @@ def get_dataloader(data_cfg):
 
     # dataset
     dataset = get_dataset(data_cfg)
-    normalizer = dataset.normalizer
 
     # dataloader   
     loader = torch.utils.data.DataLoader(
@@ -14,7 +13,7 @@ def get_dataloader(data_cfg):
         batch_size = data_cfg["batch_size"], 
         num_workers = data_cfg["num_workers"], 
         shuffle = True)
-    return loader, normalizer
+    return loader
 
 def get_dataset(data_cfg):
     
