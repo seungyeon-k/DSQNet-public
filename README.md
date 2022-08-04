@@ -18,15 +18,19 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 - [x] Dataset upload
 - [ ] Pre-trained model upload
 - [ ] Evaluation script (`evaluation.py`)
-- [ ] Requirements update
+- [x] Requirements update
 - [ ] Data generation script (`data_generation.py`)
 
 ## Requirements
 ### Environment
 The project codes are tested in the following environment.
-- python 3.7.9
-- pytorch 1.6.0
-- tensorboard 2.3.0
+- python 3.8.13
+- pytorch 1.12.0
+- tensorboard 2.9.1
+- pandas
+- scikit-learn
+- Open3D
+
 
 ### Datasets
 Datasets should be stored in `datasets/` directory. Datasets can be downloaded through the [Google drive link](https://drive.google.com/drive/folders/1PQ9dSeD0WmdESQemsnM1SPmpPDChQ95s?usp=sharing). After set up, the `datasets/` directory should be as follows.
