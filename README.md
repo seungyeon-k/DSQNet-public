@@ -13,8 +13,8 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 <I>Figure 1: Pipeline for proposed recognition-based grasping algorithm: (i) a trained segmentation network is used to segment a partially observed point cloud into a set of simpler point clouds; (ii) The trained DSQNet converts each point cloud into a deformable superquadric primitive, with its collective union representing the full object shape; (iii) grasp poses are generated in a gripper-dependent manner from the recognized full shapes. </I>
 
 ## Progress
-- [ ] DSQNet training script (`train.py`)
-- [ ] Segmentation network training script (`train.py`)
+- [x] DSQNet training script (`train.py`)
+- [x] Segmentation network training script (`train.py`)
 - [x] Dataset upload
 - [ ] Pre-trained model upload
 - [ ] Evaluation script (`evaluation.py`)
@@ -30,7 +30,6 @@ The project codes are tested in the following environment.
 - pandas
 - scikit-learn
 - Open3D
-
 
 ### Datasets
 Datasets should be stored in `datasets/` directory. Datasets can be downloaded through the [Google drive link](https://drive.google.com/drive/folders/1PQ9dSeD0WmdESQemsnM1SPmpPDChQ95s?usp=sharing). After set up, the `datasets/` directory should be as follows.
@@ -80,6 +79,12 @@ The training script is `train.py`.
 - `--logdir` specifies a directory where the results will be saved.
 - `--run` specifies a name for an experiment.
 - `--device` specifies an GPU number to use.
+
+Training DSQNet (or SQNet) and segmentation network:
+```
+python train.py --config configs/{X}_config.yml
+```
+- `X` is either `sqnet`, `dsqnet` or `segnet`.
 
 ### Evaluation
 preparing...
