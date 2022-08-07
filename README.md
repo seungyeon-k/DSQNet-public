@@ -101,7 +101,7 @@ python train.py --config configs/{X}_config.yml
 ### Evaluation
 The evaluation script is `evaluation.py`. 
 - `--object` specifies an object class to evaluate in object dataset.
-- `--index` specifies a
+- `--index` specifies an object index in 10 different objects with different shape parameters.
 - `--run` specifies a name for an experiment.
 - `--device` specifies an GPU number to use.
 
