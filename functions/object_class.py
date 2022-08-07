@@ -1,33 +1,9 @@
 import numpy as np
 import random
 import open3d as o3d
-from training.functions.primitives import Cylinder, Box, Sphere, Cone, Torus, Supertoroid, Semi_Sphere_Shell, RectangleRing, CylinderRing, gen_primitive
-from training.functions.make_mesh import o3d_to_trimesh
-# import util as ut
+from functions.primitives import Cylinder, Box, Cone, Torus, gen_primitive
 import json
-import training.functions.lie_alg
 from scipy.stats import special_ortho_group
-import trimesh
-# import fcl
-
-class Object_trimesh:
-    def __init__(self, set_of_primitives, transform=True, collisionBox=False):
-        self.initialzier(set_of_primitives, transform)
-
-    def initialzier(self, set_of_primitives, transform=True):
-        self.num_primitives = len(set_of_primitives)
-        self.primitives = set_of_primitives.copy()
-        self.mesh = o3d_to_trimesh(self.primitives[0].mesh)
-        for primitive in self.primitives[1:]:
-            self.mesh = trimesh.boolean.union((self.mesh, o3d_to_trimesh(primitive.mesh)), engine='blender')
-        if transform is not False:
-            self.transform_to_object_frame(transform)
-
-    def transform_object(self, SE3):
-        # for primitive in range(self.num_primitives):
-        #     self.primitives[primitive].mesh.transform(SE3)
-        #     self.primitives[primitive].SE3 = np.matmul(SE3, self.primitives[primitive].SE3)
-        self.mesh.apply_transform(SE3)
 
 class Object:
     def __init__(self, set_of_primitives, transform=True, collisionBox=False):

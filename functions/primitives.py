@@ -99,26 +99,26 @@ class Torus(Base_primitives):
         self.transform_mesh()
 
 class Superquadric(Base_primitives):
-    def __init__(self, SE3, parameters, color=[0.8, 0.8, 0.8]): 
+    def __init__(self, SE3, parameters, resolution=10): 
         self.type = 'superquadric'
         self.SE3 = SE3
         self.parameters = parameters
-        self.color = color
-        self.n_samples = 50
-        self.mesh = mesh_superquadric(self.parameters, self.SE3, n_samples=self.n_samples)
+        self.resolution = resolution
+        self.color = [0.8, 0.8, 0.8]
+        self.mesh = mesh_superquadric(self.parameters, self.SE3, resolution=self.resolution)
         self.transform_mesh()
 
 class DeformableSuperquadric(Base_primitives):
-    def __init__(self, SE3, parameters, color=[0.8, 0.8, 0.8]):
+    def __init__(self, SE3, parameters, resolution=10):
         self.type = 'deformable_superquadric'
         self.SE3 = SE3
         self.parameters = parameters
-        self.color = color
-        self.n_samples = 50
-        self.mesh = mesh_deformable_superquadric(self.parameters, self.SE3, n_samples=self.n_samples)
+        self.resolution = resolution
+        self.color = [0.8, 0.8, 0.8]
+        self.mesh = mesh_deformable_superquadric(self.parameters, self.SE3, resolution=self.resolution)
         self.transform_mesh()
 
-def mesh_superquadric(parameters, SE3, n_samples=100):
+def mesh_superquadric(parameters, SE3, resolution=10):
 
     assert SE3.shape == (4, 4)
 
@@ -132,7 +132,7 @@ def mesh_superquadric(parameters, SE3, n_samples=100):
     t = SE3[0:3, 3:]
 
     # make grids
-    mesh = o3d.geometry.TriangleMesh.create_sphere(radius = 1, resolution = 30)
+    mesh = o3d.geometry.TriangleMesh.create_sphere(radius = 1, resolution = resolution)
     vertices_numpy = np.asarray(mesh.vertices)
     eta = np.arcsin(vertices_numpy[:,2:3])
     omega = np.arctan2(vertices_numpy[:,1:2], vertices_numpy[:,0:1])
@@ -149,7 +149,7 @@ def mesh_superquadric(parameters, SE3, n_samples=100):
 
     return mesh
 
-def mesh_deformable_superquadric(parameters, SE3, n_samples=100):
+def mesh_deformable_superquadric(parameters, SE3, resolution=10):
     
     assert SE3.shape == (4, 4)
 
@@ -168,7 +168,7 @@ def mesh_deformable_superquadric(parameters, SE3, n_samples=100):
         alpha = np.arctan2(sin_alpha, cos_alpha)
 
     # make grids
-    mesh = o3d.geometry.TriangleMesh.create_sphere(radius = 1, resolution = 30)
+    mesh = o3d.geometry.TriangleMesh.create_sphere(radius = 1, resolution = resolution)
     vertices_numpy = np.asarray(mesh.vertices)
     eta = np.arcsin(vertices_numpy[:,2:3])
     omega = np.arctan2(vertices_numpy[:,1:2], vertices_numpy[:,0:1])

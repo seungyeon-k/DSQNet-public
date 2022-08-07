@@ -16,8 +16,8 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 - [x] DSQNet training script (`train.py`)
 - [x] Segmentation network training script (`train.py`)
 - [x] Dataset upload
-- [ ] Pre-trained model upload
-- [ ] Evaluation script (`evaluation.py`)
+- [x] Pre-trained model upload
+- [x] Evaluation script (`evaluation.py`)
 - [x] Requirements update
 - [ ] Data generation script (`data_generation.py`)
 
@@ -42,13 +42,17 @@ datasets
 │   ├── train_datalist.csv
 │   ├── validation_datalist.csv
 │   └── test_datalist.csv
-└── object_dataset
+├── object_dataset
+│   ├── bottle_cone
+│   ├── ... (10 more folders)
+│   ├── truncated_torus
+│   ├── train_datalist.csv
+│   ├── validation_datalist.csv
+│   └── test_datalist.csv
+└── evaluation_dataset
     ├── bottle_cone
     ├── ... (10 more folders)
-    ├── truncated_torus
-    ├── train_datalist.csv
-    ├── validation_datalist.csv
-    └── test_datalist.csv
+    └── truncated_torus
 
 ```
 - (Optional) If you want to generate your own custom dataset, run the following script:
@@ -61,15 +65,18 @@ preparing...
 Pre-trained models should be stored in `pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing). After set up, the `pretrained/` directory should be follows.
 ```
 pretrained
-├── segnet
-│   ├── segnet_config.yml
-│   └── model_best.pkl
-├── sqnet
-│   ├── sqnet_config.yml
-│   └── model_best.pkl
-└── dsqnet
-    ├── dsqnet_config.yml
-    └── model_best.pkl
+├── segnet_config
+│   └── example
+│       ├── segnet_config.yml
+│       └── model_best.pkl
+├── sqnet_config
+│   └── example
+│       ├── sqnet_config.yml
+│       └── model_best.pkl
+└── dsqnet_config
+    └── example
+        ├── dsqnet_config.yml
+        └── model_best.pkl
 ```
 
 ## Running
@@ -85,9 +92,29 @@ Training DSQNet (or SQNet) and segmentation network:
 python train.py --config configs/{X}_config.yml
 ```
 - `X` is either `sqnet`, `dsqnet` or `segnet`.
+- If you want to see the results of the intermediate training process in tensorboard, run this code:
+  ```
+  tensorboard --logdir train_results/{X}_config --host {ip address}
+  ```
+  , where `--logdir` specifies the directory where the results is saved, and the code is an example with the default setting.
 
 ### Evaluation
-preparing...
+The evaluation script is `evaluation.py`. 
+- `--object` specifies an object class to evaluate in object dataset.
+- `--index` specifies a
+- `--run` specifies a name for an experiment.
+- `--device` specifies an GPU number to use.
+
+Example evaluation code execution:
+```
+python evaluation.py --object {X} --index {Y}
+```
+- `X` is either `box`, `cylinder`, `cone`, `ellipsoid`, `truncated_cone`, `truncated_torus`, `hammer_cylinder`, `screw_driver`, `padlock`, `cup_with_lid`, `dumbbell`, or `bottle_cone`.
+- `Y` is an integer between `0` and `9`.
+- If you want to see the results, run this code:
+  ```
+  tensorboard --logdir evaluation_results/tensorboard --host {ip address}
+  ```
 
 ## Citation
 ```

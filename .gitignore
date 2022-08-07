@@ -5,3 +5,5 @@ __pycache__/
 
 datasets/
 train_results/
+pretrained/
+temp/
