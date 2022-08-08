@@ -18,7 +18,9 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 - [x] Dataset upload
 - [x] Pre-trained model upload
 - [x] Evaluation script (`evaluation.py`)
+- [x] Volumetric IoU calculation script (`evaluation.py`)
 - [x] Requirements update
+- [ ] Grasp pose generation script (`grasping.py`)
 - [ ] Data generation script (`data_generation.py`)
 
 ## Requirements
@@ -59,7 +61,6 @@ datasets
 ```
 preparing...
 ```
-> **Tips for playing with code:** preparing...
 
 ### Pretrained model
 Pre-trained models should be stored in `pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing). After set up, the `pretrained/` directory should be follows.
@@ -104,6 +105,7 @@ The evaluation script is `evaluation.py`.
 - `--index` specifies an object index in 10 different objects with different shape parameters.
 - `--run` specifies a name for an experiment.
 - `--device` specifies an GPU number to use.
+- `--iou` specifies an boolean action for whether to measure volumetric IoU or not (default: false).
 
 Example evaluation code execution:
 ```
@@ -115,6 +117,7 @@ python evaluation.py --object {X} --index {Y}
   ```
   tensorboard --logdir evaluation_results/tensorboard --host {ip address}
   ```
+> **Warning:** The option `--iou` does not work in server (i.e., without a connected display). If you want to measure IoU in server, try [Open3D headless rendering](http://www.open3d.org/docs/latest/tutorial/Advanced/headless_rendering.html).
 
 ## Citation
 ```

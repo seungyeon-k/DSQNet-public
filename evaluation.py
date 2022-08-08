@@ -13,6 +13,7 @@ from functions.lie import quaternions_to_rotation_matrices, define_SE3, inverse_
 from functions.primitives import Superquadric, DeformableSuperquadric
 from functions.object_class import Object
 from functions.data_reader import create_object_from_data
+from functions.iou_calculator import iou
 from models import load_pretrained
 
 def pred_to_parameters(pred_fit, normalizer, pnts_frame):
@@ -48,6 +49,7 @@ if __name__ == '__main__':
     parser.add_argument('--index', type=int, default=0)
     parser.add_argument('--device', default=0)
     parser.add_argument('--run', default=None)
+    parser.add_argument('--iou', action='store_true')
     args = parser.parse_args()
 
     # configuration
@@ -311,28 +313,12 @@ if __name__ == '__main__':
             global_step=1
         )
 
+        # calculate iou
+        if args.iou:
+            iou_sqnet = iou(gt_mesh.mesh, result_sq.mesh)
+            iou_dsqnet = iou(gt_mesh.mesh, result_dsq.mesh)
+            print(f"[{file_name}] SQNet iou value: {iou_sqnet}")
+            print(f"[{file_name}] DSQNet iou value: {iou_dsqnet}")
+
         # close writer
         writer.close()
-
-        # # save meshes
-        # if bSaveMesh:
-        #     meshsaver_name = meshsaver_path + file_name + '_eval.npy'
-
-        #     data_save = dict()
-        #     data_save['partial_pc'] = pointcloud
-        #     data_save['segmented_pc_points'] = np.asarray(processed_pcd.points)
-        #     data_save['segmented_pc_colors'] = np.asarray(processed_pcd.colors)
-        #     data_save['GT_vertices'] = np.asarray(gt_mesh.mesh.vertices)
-        #     data_save['GT_triangles'] = np.asarray(gt_mesh.mesh.triangles)     
-
-        #     data_save['SDSFN_vertices'] = np.asarray(result_mesh_colored.vertices)
-        #     data_save['SDSFN_triangles'] = np.asarray(result_mesh_colored.triangles)
-        #     data_save['SDSFN_colors'] = np.asarray(result_mesh_colored.vertex_colors)
-        #     data_save['SSFN_vertices'] = np.asarray(result_mesh_ssfn_colored.vertices)
-        #     data_save['SSFN_triangles'] = np.asarray(result_mesh_ssfn_colored.triangles)
-        #     data_save['SSFN_colors'] = np.asarray(result_mesh_ssfn_colored.vertex_colors)
-
-        #     np.save(meshsaver_name, data_save)
-
-        # # save alarm
-        # print("save completed.")

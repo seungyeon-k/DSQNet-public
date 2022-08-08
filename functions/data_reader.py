@@ -21,7 +21,7 @@ def create_object_from_prim_list(set_of_primitives):
     obj = Object(set_of_primitives, transform=False)
     return obj
 
-def create_object_from_data(data, plot=False, trimesh = False):
+def create_object_from_data(data, plot=False):
     set_of_primitives = create_set_of_prims_from_data(data)
     obj = create_object_from_prim_list(set_of_primitives)
     if plot:
