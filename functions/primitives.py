@@ -98,6 +98,75 @@ class Torus(Base_primitives):
         
         self.transform_mesh()
 
+class Torus_handle(Base_primitives):
+    
+	def __init__(self, SE3, parameters, color=[0.8, 0.8, 0.8], collisionBox=False):
+		self.type = 'torus'
+		self.SE3 = SE3
+		self.parameters = parameters
+		self.color = color
+		self.mesh = o3d.geometry.TriangleMesh.create_torus(self.parameters['torus_radius'], self.parameters['tube_radius'], 100, 100)
+		
+		if parameters['c1'] > - (self.parameters['torus_radius'] + self.parameters['tube_radius']) and parameters['c1'] < (self.parameters['torus_radius'] + self.parameters['tube_radius']):
+			bbox = o3d.geometry.AxisAlignedBoundingBox()
+			bbox.min_bound = [- (self.parameters['torus_radius'] + self.parameters['tube_radius'])] * 3
+			bbox.max_bound = [self.parameters['c1'], (self.parameters['torus_radius'] + self.parameters['tube_radius']), (self.parameters['torus_radius'] + self.parameters['tube_radius'])]
+			self.mesh = self.mesh.crop(bbox)
+			boundary_edges = np.asarray(self.mesh.get_non_manifold_edges(allow_boundary_edges = False))
+			boundary_vertices = np.reshape(boundary_edges, -1)
+			boundary_vertices = np.unique(boundary_vertices)
+
+			for boundary_vertex in boundary_vertices.tolist():
+				vertex_pnt = self.mesh.vertices[boundary_vertex]
+				sinv = vertex_pnt[2] / self.parameters['tube_radius']
+				cosv = (np.linalg.norm(vertex_pnt[0:2]) - self.parameters['torus_radius']) / self.parameters['tube_radius']
+				cosu_proj = self.parameters['c1'] / (self.parameters['torus_radius'] + self.parameters['tube_radius'] * cosv)
+				if cosu_proj > 1.0:
+					u_proj = 0
+				else:
+					u_proj = np.arccos(cosu_proj)
+				self.mesh.vertices[boundary_vertex] = [self.parameters['c1'], (self.parameters['torus_radius'] + self.parameters['tube_radius'] * cosv) * np.sin(np.sign(vertex_pnt[1]) * u_proj), self.parameters['tube_radius'] * sinv] 
+			
+			vertices = np.asarray(self.mesh.vertices)
+
+			if self.parameters['c1'] > self.parameters['torus_radius'] - self.parameters['tube_radius'] or self.parameters['c1'] < -self.parameters['torus_radius'] + self.parameters['tube_radius']:
+				vertices = np.concatenate((vertices, np.array([[self.parameters['c1'], 0, 0]])), axis=0)
+				center_ver_ind = vertices.shape[0] - 1
+
+				triangles = np.asarray(self.mesh.triangles)
+				plane_triangles = np.concatenate((boundary_edges, np.ones((boundary_edges.shape[0], 1)) * center_ver_ind), axis = 1).astype(int)
+				plane_normals = np.cross(vertices[plane_triangles[:, 1]] - vertices[plane_triangles[:, 0]], vertices[plane_triangles[:, 2]] - vertices[plane_triangles[:, 1]])
+				plane_triangles = np.where(np.repeat(np.transpose([plane_normals[:, 2]]), 3, axis = 1) > 0, plane_triangles, np.transpose([plane_triangles[:, 1], plane_triangles[:, 0], plane_triangles[:, 2]]))
+
+				opposite_normal_ind = np.squeeze(np.argwhere(plane_normals[:, 0] > 0))
+				plane_triangles[opposite_normal_ind] = np.flip(plane_triangles[opposite_normal_ind], 1)
+
+				triangles = np.append(triangles, plane_triangles, axis = 0)
+			else:
+				centers = np.array([[self.parameters['c1'], np.sqrt(self.parameters['torus_radius']**2 - self.parameters['c1']**2), 0], [self.parameters['c1'], -np.sqrt(self.parameters['torus_radius']**2 - self.parameters['c1']**2), 0]])
+				vertices = np.concatenate((vertices, centers), axis=0)
+				centers_ind = [vertices.shape[0] - 2, vertices.shape[0] - 1]
+
+				triangles = np.asarray(self.mesh.triangles)
+				positive_boundary_edges = boundary_edges[np.squeeze(np.argwhere(vertices[boundary_edges[:, 0], 1]>=0))]
+				negative_boundary_edges = boundary_edges[np.squeeze(np.argwhere(vertices[boundary_edges[:, 0], 1]<0))]
+				boundary_edges = [positive_boundary_edges, negative_boundary_edges]
+				for section in range(2):
+					plane_triangles = np.concatenate((boundary_edges[section], np.ones((boundary_edges[section].shape[0], 1)) * centers_ind[section]), axis = 1).astype(int)
+					plane_normals = np.cross(vertices[plane_triangles[:, 1]] - vertices[plane_triangles[:, 0]], vertices[plane_triangles[:, 2]] - vertices[plane_triangles[:, 1]])
+					plane_triangles = np.where(np.repeat(np.transpose([plane_normals[:, 2]]), 3, axis = 1) > 0, plane_triangles, np.transpose([plane_triangles[:, 1], plane_triangles[:, 0], plane_triangles[:, 2]]))
+
+					opposite_normal_ind = np.squeeze(np.argwhere(plane_normals[:, 0] > 0))
+					plane_triangles[opposite_normal_ind] = np.flip(plane_triangles[opposite_normal_ind], -1)
+
+					triangles = np.append(triangles, plane_triangles, axis = 0)			
+	
+			self.mesh.vertices = o3d.utility.Vector3dVector(vertices)
+			self.mesh.triangles = o3d.utility.Vector3iVector(triangles)
+		
+		
+		self.transform_mesh()
+
 class Superquadric(Base_primitives):
     def __init__(self, SE3, parameters, resolution=10): 
         self.type = 'superquadric'

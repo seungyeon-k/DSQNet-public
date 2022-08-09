@@ -1,6 +1,6 @@
 import open3d as o3d
 import numpy as np
-from functions.lie import define_SE3, inverse_SE3
+from functions.utils_numpy import define_SE3, inverse_SE3
 import copy
 import torch
 from sklearn.preprocessing import normalize

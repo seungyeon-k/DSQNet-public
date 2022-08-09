@@ -9,7 +9,7 @@ from sklearn.preprocessing import normalize
 from tensorboardX import SummaryWriter
 
 from functions.pc_preprocess import process_pc, normalize_numpy_pc
-from functions.lie import quaternions_to_rotation_matrices, define_SE3, inverse_SE3
+from functions.utils_numpy import quaternions_to_rotation_matrices, define_SE3, inverse_SE3
 from functions.primitives import Superquadric, DeformableSuperquadric
 from functions.object_class import Object
 from functions.data_reader import create_object_from_data
