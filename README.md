@@ -12,17 +12,6 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 ![pipeline](figures/pipeline.png)
 <I>Figure 1: Pipeline for proposed recognition-based grasping algorithm: (i) a trained segmentation network is used to segment a partially observed point cloud into a set of simpler point clouds; (ii) The trained DSQNet converts each point cloud into a deformable superquadric primitive, with its collective union representing the full object shape; (iii) grasp poses are generated in a gripper-dependent manner from the recognized full shapes. </I>
 
-## Progress
-- [x] DSQNet training script (`train.py`)
-- [x] Segmentation network training script (`train.py`)
-- [x] Dataset upload
-- [x] Pre-trained model upload
-- [x] Evaluation script (`evaluation.py`)
-- [x] Volumetric IoU calculation script (`evaluation.py`)
-- [x] Requirements update
-- [x] Data generation script (`data_generation.py`)
-- [ ] Grasp pose generation script (`grasping.py`)
-
 ## Requirements
 ### Environment
 The project codes are tested in the following environment.
@@ -64,6 +53,7 @@ python data_generation.py --config {X} --name {Y}
 - `X` is either `primitive` or `object`.
 - `Y` is a folder name of your own dataset.
 > **Tips for playing with code:** You can create various objects by editing the json file in the folder `object_params`. You can also adjust the parameters of the dataset such as the number of the points of partially observed point cloud in the code `data_generation.py`.
+> **Warning:** The data generation does not work in server (i.e., without a connected display). If you want generate a dataset in server, try [Open3D headless rendering](http://www.open3d.org/docs/latest/tutorial/Advanced/headless_rendering.html).
 
 ### Pretrained model
 Pre-trained models should be stored in `pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing). After set up, the `pretrained/` directory should be follows.
@@ -120,7 +110,7 @@ python evaluation.py --object {X} --index {Y}
   ```
   tensorboard --logdir evaluation_results/tensorboard --host {ip address}
   ```
-> **Warning:** The option `--iou` does not work in server (i.e., without a connected display). If you want to measure IoU in server, try [Open3D headless rendering](http://www.open3d.org/docs/latest/tutorial/Advanced/headless_rendering.html).
+> **Warning:** The option `--iou` also does not work in server. If you want to measure IoU in server, try [Open3D headless rendering](http://www.open3d.org/docs/latest/tutorial/Advanced/headless_rendering.html).
 
 ## Citation
 ```
