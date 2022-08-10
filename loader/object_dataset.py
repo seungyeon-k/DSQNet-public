@@ -10,6 +10,7 @@ class ObjectDataset(torch.utils.data.Dataset):
     def __init__(self, data_cfg):
         self.num_primitives = data_cfg["num_primitives"]
         self.num_points = data_cfg["num_points"]
+        self.num_sampled_points = data_cfg['num_sampled_points']
         self.noise_augment = data_cfg.get("noise_augment", True)
         self.noise_std = data_cfg.get("noise_std", 0)
 
@@ -24,14 +25,21 @@ class ObjectDataset(torch.utils.data.Dataset):
         return len(self.pc_list)
 
     def __getitem__(self, idx):
-        pc = self.pc_list[idx]
+
+        # random idx
+        perm = torch.randperm(self.num_points)
+        permidx = perm[:self.num_sampled_points]
+        tempidx = torch.zeros(self.num_points)
+        tempidx[permidx] = 1
+        tempidx = tempidx.type(torch.bool)
+        pc = self.pc_list[idx][:, tempidx]
 
         if self.noise_augment:
             pc = self.noise_augmentation(pc)
 
         pc, diagonal_len = self.normalize_pointcloud(pc)
         pc = torch.Tensor(pc)
-        label = torch.Tensor(self.label_list[idx])
+        label = torch.Tensor(self.label_list[idx][tempidx])
 
         return pc, label, diagonal_len
 

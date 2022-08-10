@@ -49,6 +49,7 @@ class Cone(Base_primitives):
         self.transform_mesh()
 
 class Torus(Base_primitives):
+    
     def __init__(self, SE3, parameters, color=[0.8, 0.8, 0.8], collisionBox=False):
         self.type = 'torus'
         self.SE3 = SE3
@@ -86,7 +87,6 @@ class Torus(Base_primitives):
         for section in range(2):
             plane_triangles = np.concatenate((boundary_edges[section], np.ones((boundary_edges[section].shape[0], 1)) * centers_ind[section]), axis = 1).astype(int)
             plane_normals = np.cross(vertices[plane_triangles[:, 1]] - vertices[plane_triangles[:, 0]], vertices[plane_triangles[:, 2]] - vertices[plane_triangles[:, 1]])
-            # plane_triangles = np.where(np.repeat(np.transpose([plane_normals[:, 2]]), 3, axis = 1) > 0, plane_triangles, np.transpose([plane_triangles[:, 1], plane_triangles[:, 0], plane_triangles[:, 2]]))
 
             opposite_normal_ind = np.squeeze(np.argwhere(plane_normals[:, 0] > 0))
             plane_triangles[opposite_normal_ind] = np.flip(plane_triangles[opposite_normal_ind], -1)
@@ -168,22 +168,22 @@ class Torus_handle(Base_primitives):
 		self.transform_mesh()
 
 class Superquadric(Base_primitives):
-    def __init__(self, SE3, parameters, resolution=10): 
+    def __init__(self, SE3, parameters, resolution=10, color=[0.8, 0.8, 0.8]): 
         self.type = 'superquadric'
         self.SE3 = SE3
         self.parameters = parameters
         self.resolution = resolution
-        self.color = [0.8, 0.8, 0.8]
+        self.color = color
         self.mesh = mesh_superquadric(self.parameters, self.SE3, resolution=self.resolution)
         self.transform_mesh()
 
 class DeformableSuperquadric(Base_primitives):
-    def __init__(self, SE3, parameters, resolution=10):
+    def __init__(self, SE3, parameters, resolution=10, color=[0.8, 0.8, 0.8]):
         self.type = 'deformable_superquadric'
         self.SE3 = SE3
         self.parameters = parameters
         self.resolution = resolution
-        self.color = [0.8, 0.8, 0.8]
+        self.color = color
         self.mesh = mesh_deformable_superquadric(self.parameters, self.SE3, resolution=self.resolution)
         self.transform_mesh()
 

@@ -20,8 +20,8 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 - [x] Evaluation script (`evaluation.py`)
 - [x] Volumetric IoU calculation script (`evaluation.py`)
 - [x] Requirements update
+- [x] Data generation script (`data_generation.py`)
 - [ ] Grasp pose generation script (`grasping.py`)
-- [ ] Data generation script (`data_generation.py`)
 
 ## Requirements
 ### Environment
@@ -59,8 +59,11 @@ datasets
 ```
 - (Optional) If you want to generate your own custom dataset, run the following script:
 ```
-preparing...
+python data_generation.py --config {X} --name {Y}
 ```
+- `X` is either `primitive` or `object`.
+- `Y` is a folder name of your own dataset.
+> **Tips for playing with code:** You can create various objects by editing the json file in the folder `object_params`. You can also adjust the parameters of the dataset such as the number of the points of partially observed point cloud in the code `data_generation.py`.
 
 ### Pretrained model
 Pre-trained models should be stored in `pretrained/`. The pre-trained models are provided through the [Google drive link](https://drive.google.com/drive/folders/1PN7DF0iNL60iOuyA-QS2g7jMzXSOPD6a?usp=sharing). After set up, the `pretrained/` directory should be follows.

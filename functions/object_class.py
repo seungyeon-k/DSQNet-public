@@ -180,8 +180,8 @@ class Torus_Object(Object):
 		P1_SE3 = define_SE3(np.identity(3), [0, 0, 0])
 		P1_parameters = {"torus_radius": r_torus, "tube_radius": r_tube, "c1": c1}
 
-		if 'color1' in config.keys():
-			P1_color = config['color1']
+		if 'color' in config.keys():
+			P1_color = config['color']
 		else:
 			P1_color = None
 
@@ -253,19 +253,19 @@ class Bottle_Cone(Object):
 
 		if 'color1' in config.keys():
 			P1_color = config['color1']
-			P1 = Cylinder(SE3=P1_SE3, parameters=P1_parameters, color=P1_color, collisionBox=collisionBox)
+			P1 = Cylinder(SE3=P1_SE3, parameters=P1_parameters, color=P1_color)
 		else:
-			P1 = Cylinder(SE3=P1_SE3, parameters=P1_parameters, collisionBox=collisionBox)
+			P1 = Cylinder(SE3=P1_SE3, parameters=P1_parameters)
 		if 'color2' in config.keys():
 			P2_color = config['color2']
-			P2 = Cone(SE3=P2_SE3, parameters=P2_parameters, color=P2_color, collisionBox=collisionBox )
+			P2 = Cone(SE3=P2_SE3, parameters=P2_parameters, color=P2_color)
 		else:
-			P2 = Cone(SE3=P2_SE3, parameters=P2_parameters, collisionBox=collisionBox)
+			P2 = Cone(SE3=P2_SE3, parameters=P2_parameters)
 		if 'color3' in config.keys():
 			P3_color = config['color3']
-			P3 = Cylinder(SE3=P3_SE3, parameters=P3_parameters, color=P3_color, collisionBox=collisionBox)
+			P3 = Cylinder(SE3=P3_SE3, parameters=P3_parameters, color=P3_color)
 		else:
-			P3 = Cylinder(SE3=P3_SE3, parameters=P3_parameters, collisionBox=collisionBox)
+			P3 = Cylinder(SE3=P3_SE3, parameters=P3_parameters)
 	
 		self.initialzier([P1, P2, P3], transform='center')
 		if collisionBox:

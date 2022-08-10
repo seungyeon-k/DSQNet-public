@@ -24,11 +24,11 @@ def generate_data(object_names,
 				  visualize_object=False, 
 				  visualize_cam_points=False, 
 				  visualize_pc=False, 
-				  visualize_pc_with_mesh=True, 
+				  visualize_pc_with_mesh=False, 
 				  get_color=True, 
 				  render_mesh=False, 
 				  dir_name=None):
-				  
+
 	for object_name in object_names:
 		with open(f"object_params/{object_name}.json") as readfile:
 			config = json.load(readfile)
@@ -127,11 +127,11 @@ def generate_data(object_names,
 					os.makedirs('datasets')
 				
 				if dir_name is None:
-					if not os.path.exists('training/dataset/notspecified'):
-						os.makedirs('training/dataset/notspecified')
-					if not os.path.exists('training/dataset/notspecified/'+f"{object_name}"):
-						os.makedirs('training/dataset/notspecified/'+f"{object_name}")
-					np.save('training/dataset/notspecified' + f"/{object_name}/{object_name}_{object_num:04}_viewpoint_{view_point_num:02}.npy", data)
+					if not os.path.exists('datasets/notspecified'):
+						os.makedirs('datasets/notspecified')
+					if not os.path.exists('datasets/notspecified/'+f"{object_name}"):
+						os.makedirs('datasets/notspecified/'+f"{object_name}")
+					np.save('datasets/notspecified' + f"/{object_name}/{object_name}_{object_num:04}_viewpoint_{view_point_num:02}.npy", data)
 					print(f"saved {object_name}_{object_num:04}_viewpoint_{view_point_num:02}")					
 				else:
 					if not os.path.exists(dir_name):
@@ -143,9 +143,6 @@ def generate_data(object_names,
 					np.save(dir_name + f"/{object_name}/{object_name}_{object_num:04}_viewpoint_{view_point_num:02}.npy", data)
 					print(f"saved {object_name}_{object_num:04}_viewpoint_{view_point_num:02}")
 
-		
-		num_data = num_objects * num_cams
-		print(f"Total {num_data} {object_name} data are created")
 		return True
 
 def save_data(default_path = 'datasets/', shuffle = True, train_test_ratio = 0.6, train_val_ratio = 0.8):
