@@ -112,6 +112,20 @@ python evaluation.py --object {X} --index {Y}
   ```
 > **Warning:** The option `--iou` also does not work in server. If you want to measure IoU in server, try [Open3D headless rendering](http://www.open3d.org/docs/latest/tutorial/Advanced/headless_rendering.html).
 
+### Grasp Pose Generation
+The grasp pose generation script is `grasp_pose_generation.py`. 
+- `--object` specifies an object class to evaluate in object dataset.
+- `--index` specifies an object index in 10 different objects with different shape parameters.
+- `--device` specifies an GPU number to use.
+
+Example grasp pose generation code execution:
+```
+python grasp_pose_generation.py --object {X} --index {Y}
+```
+- `X` is either `box`, `cylinder`, `cone`, `ellipsoid`, `truncated_cone`, `truncated_torus`, `hammer_cylinder`, `screw_driver`, `padlock`, `cup_with_lid`, `dumbbell`, or `bottle_cone`.
+- `Y` is an integer between `0` and `9`.
+- One example grasp pose is visualized in the visualization window so the code should be excuted with display device (the code does not work in server). 
+
 ## Citation
 ```
 @article{kim2022dsqnet,

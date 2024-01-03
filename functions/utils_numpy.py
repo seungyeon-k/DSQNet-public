@@ -27,6 +27,12 @@ def inverse_SE3(SE3):
     inv_SE3 = define_SE3(R, p)
     return inv_SE3
 
+def transform_point(SE3, p):
+    p_h = np.ones(4)
+    p_h[0:3] = p
+    p_h = np.dot(SE3, p_h)
+    return p_h[0:3]
+
 # Matrix to vector
 def ToVector(mat):
     if np.size(mat, 1) == 4:          

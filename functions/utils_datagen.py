@@ -87,6 +87,7 @@ def get_partial_pc_via_depth(obj, cam_poses, num_pcd_points=3000, get_color=True
 			diameter_zoom = (1.5 - cnt * 0.1) * np.linalg.norm(obj.mesh.get_oriented_bounding_box().extent)
 
 			cam_pos = obj.mesh.get_center() + diameter_zoom * cam_poses[sample, :] / np.linalg.norm(cam_poses[sample, :])
+		
 		# downsample
 		v_size = 0.5
 		v_min = 0
