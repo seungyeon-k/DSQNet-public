@@ -5,6 +5,7 @@ The official repository for &lt;DSQNet: A Deformable Model-Based Supervised Lear
 
 > The paper proposes a recognition-based grasping method that merges a richer set of shape primitives, the deformable superquadrics, with a deep learning network, DSQNet, that is trained to identify complete object shapes from partial point cloud data.
 
+- *[Project page](https://dsqnet.github.io/)*
 - *[Paper](https://ieeexplore.ieee.org/abstract/document/9802912)* 
 - *[Supplementary video](https://ieeexplore.ieee.org/abstract/document/9802912/media#media)* 
 
